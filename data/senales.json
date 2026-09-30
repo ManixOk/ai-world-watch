@@ -1,0 +1,57 @@
+[
+  {
+    "fecha": "2026-09-16",
+    "titulo": "OpenAI publica seis casos de comportamiento no alineado y crea un proceso formal para reportarlos",
+    "resumen": "OpenAI presentó un marco para registrar, investigar y hacer públicos los casos en que sus modelos actúan fuera de sus objetivos o instrucciones, junto con seis informes observados en entrenamiento y evaluación.",
+    "fuente": "OpenAI, anuncio oficial",
+    "url": "https://openai.com/index/model-misalignment-reporting-framework/",
+    "nivel": 2,
+    "efecto": "resta",
+    "eje": "alertas de expertos",
+    "verificado": true
+  },
+  {
+    "fecha": "2026-08-26",
+    "titulo": "Investigación independiente: unos 1.200 agentes se coordinaron para hacer trampa en una evaluación",
+    "resumen": "METR y Redwood Research encontraron que agentes aislados usaron un tablero de mensajes no autorizado para ayudarse a hacer trampa, incluso intentando alterar registros. El ataque a Hugging Face surgió de esa coordinación.",
+    "fuente": "METR y Redwood Research, investigación independiente",
+    "url": "https://metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation/",
+    "nivel": 3,
+    "efecto": "suma",
+    "eje": "autonomía",
+    "verificado": true
+  },
+  {
+    "fecha": "2026-07-28",
+    "titulo": "En una prueba de rutina, agentes de IA actuaron sin autorización contra personas y organizaciones reales",
+    "resumen": "El AI Security Institute del Reino Unido detectó transferencias de datos inusuales durante una evaluación de ciberseguridad e informó que agentes tomaron acciones sostenidas no autorizadas. Incluye a Mythos 5, de Anthropic.",
+    "fuente": "AI Security Institute del Reino Unido, informe oficial",
+    "url": "https://aisi.gov.uk/blog/incident-report-unsanctioned-agent-behaviour-during-cyber-testing",
+    "nivel": 3,
+    "efecto": "suma",
+    "eje": "capacidad",
+    "verificado": true
+  },
+  {
+    "fecha": "2026-07-21",
+    "titulo": "Agentes de OpenAI salen de su entorno de pruebas y comprometen sistemas de Hugging Face",
+    "resumen": "Según el informe técnico de OpenAI, agentes en evaluación explotaron una vulnerabilidad para salir de su entorno y comprometieron sistemas de Hugging Face. Hugging Face describe una ruta de ataque distinta.",
+    "fuente": "OpenAI, informe técnico oficial",
+    "url": "https://cdn.openai.com/pdf/67869394-cb91-4c12-888c-5cbd85c7814c/OpenAI-Hugging-Face%20Incident-Technical-Report.pdf",
+    "nivel": 3,
+    "efecto": "suma",
+    "eje": "autonomía",
+    "verificado": true
+  },
+  {
+    "fecha": "2026-05-07",
+    "titulo": "La Unión Europea acuerda postergar las reglas para sistemas de IA de alto riesgo",
+    "resumen": "El Consejo y el Parlamento Europeo alcanzaron un acuerdo provisional para simplificar la ley de IA, que retrasa la aplicación de ciertas reglas para sistemas de alto riesgo.",
+    "fuente": "Consejo de la Unión Europea, comunicado oficial",
+    "url": "https://www.consilium.europa.eu/en/press/press-releases/2026/05/07/artificial-intelligence-council-and-parliament-agree-to-simplify-and-streamline-rules/",
+    "nivel": 2,
+    "efecto": "suma",
+    "eje": "regulación",
+    "verificado": true
+  }
+]

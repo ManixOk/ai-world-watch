@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AI World Watch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;700&family=Archivo:wdth,wght@75..125,400..700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0A1024; --panel:#10183A; --line:#1F2B55; --text:#E8EEFF; --muted:#8793BF;
+  --screen:#070C1D; --grid:rgba(63,224,255,.06);
+  --l1:#3FE0FF; --l2:#7B8CFF; --l3:#E3A845; --l4:#FF7A3D; --l5:#FF3B5C;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){--bg:#E9EDF8;--panel:#FFFFFF;--line:#CCD4EA;--text:#0A1024;--muted:#55608A}
+}
+:root[data-theme="light"]{--bg:#E9EDF8;--panel:#FFFFFF;--line:#CCD4EA;--text:#0A1024;--muted:#55608A}
+:root[data-theme="dark"]{--bg:#0A1024;--panel:#10183A;--line:#1F2B55;--text:#E8EEFF;--muted:#8793BF}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:"Archivo",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:17px;line-height:1.5}
+main{max-width:780px;margin:0 auto;padding:24px 16px 56px}
+.tech{font-family:"Chakra Petch","Archivo",system-ui,sans-serif}
+
+/* pantalla del reloj: siempre oscura, es un instrumento */
+.screen{position:relative;background:var(--screen);color:#E8EEFF;border-radius:22px;padding:22px 16px 20px;overflow:hidden;
+  border:1px solid #1F2B55;
+}
+
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;position:relative;z-index:1}
+.brand{font-size:clamp(22px,6vw,30px);font-weight:700;letter-spacing:.04em;margin:0}
+.live{font-size:13px;color:#8793BF;display:flex;align-items:center;gap:8px}
+.live i{width:8px;height:8px;border-radius:50%;background:var(--l5);}
+@keyframes blink{50%{opacity:.25}}
+
+.dialwrap{position:relative;max-width:440px;margin:6px auto 0;z-index:1}
+.dial{width:100%;display:block;overflow:visible}
+.spin{transform-box:view-box;transform-origin:200px 200px;animation:spin 90s linear infinite}
+.sweep{transform-box:view-box;transform-origin:200px 200px;animation:spin 7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion: reduce){.spin,.sweep,.live i{animation:none}}
+.center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none}
+.val{font-size:clamp(64px,20vw,104px);font-weight:700;line-height:.9;font-variant-numeric:tabular-nums;}
+.of{font-size:13px;color:#8793BF;margin-top:4px}
+.lvl{font-size:clamp(18px,5vw,22px);font-weight:700;margin-top:10px}
+.lvl.big{font-size:clamp(26px,8vw,38px);line-height:1.05;margin:0;max-width:7em}
+.lvlname{font-size:15px;color:#C5CDEB}
+
+.chips{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px;position:relative;z-index:1}
+.chip{border:1px solid #1F2B55;border-radius:8px;padding:8px 3px;text-align:center;font-size:11.5px;color:#8793BF;line-height:1.2}
+.chip b{display:block;font-size:16px;font-family:"Chakra Petch",sans-serif;color:#5A6699}
+.chip.on{color:#E8EEFF;border-color:currentColor}
+.chip.on b{color:inherit}
+.chip.on{background:rgba(255,255,255,.04)}
+.note{position:relative;z-index:1;text-align:center;color:#C5CDEB;font-size:15px;margin:16px auto 0;max-width:46ch}
+.sim{position:relative;z-index:1;display:flex;gap:12px;align-items:center;justify-content:center;margin-top:14px;font-size:13px;color:#8793BF}
+.sim input{width:190px;accent-color:var(--l1)}
+
+section{margin-top:48px}
+h2{font-size:22px;font-weight:700;margin:0 0 4px;font-family:"Chakra Petch",sans-serif}
+.lead{color:var(--muted);margin:0 0 18px;font-size:15px}
+.axis{display:grid;grid-template-columns:1fr auto;gap:4px 12px;margin-bottom:18px}
+.axis b{font-weight:600}
+.axis .n{font-family:"Chakra Petch",sans-serif;font-weight:700;font-variant-numeric:tabular-nums}
+.axis small{grid-column:1/-1;color:var(--muted);font-size:14px}
+.bar{grid-column:1/-1;display:grid;grid-template-columns:repeat(20,1fr);gap:3px}
+.bar i{height:10px;border-radius:2px;background:var(--line)}
+.trend{width:100%;height:auto;display:block}
+.ref{background:var(--panel);border-left:3px solid var(--l4);border-radius:0 10px 10px 0;padding:14px}
+.ref b,.ref span{display:block;margin-bottom:6px}
+.ref span.ver{display:inline}
+.feed{list-style:none;margin:0;padding:0}
+.feed li{padding:14px 0 14px 14px;border-left:3px solid var(--line);margin-bottom:10px;background:var(--panel);border-radius:0 10px 10px 0;padding-right:14px}
+.feed .meta{font-size:13px;color:var(--muted)}
+.feed .t{margin:4px 0;font-weight:600}
+.tag{font-family:"Chakra Petch",sans-serif;font-weight:700;margin-right:8px}
+.ver{color:#3FA66B;font-weight:600}
+.nover{color:var(--muted)}
+.src{color:var(--text);text-decoration:underline;text-underline-offset:3px}
+.scale{margin:0;padding:0;list-style:none}
+.scale li{display:grid;grid-template-columns:44px 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.scale .dot{width:44px;height:44px;border-radius:10px;display:grid;place-items:center;font-weight:700;font-family:"Chakra Petch",sans-serif;font-size:20px;border:2px solid currentColor}
+.scale b{display:block}
+.scale span{color:var(--muted);font-size:15px}
+footer{margin-top:48px;padding:14px;border:1px dashed var(--line);border-radius:10px;color:var(--muted);font-size:14px}
+</style>
+</head>
+<body>
+<main>
+  <div class="screen">
+    <div class="top">
+      <p class="brand tech">AI World Watch</p>
+      <div class="live"><i></i><span id="upd">Cargando…</span></div>
+    </div>
+
+    <div class="dialwrap">
+      <svg class="dial" viewBox="0 0 400 400" role="img" aria-labelledby="gtitle">
+        <title id="gtitle">Indicador de riesgo</title>
+        <defs>
+          <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="3.5" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <linearGradient id="sw" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#3FE0FF" stop-opacity="0"/>
+            <stop offset="1" stop-color="#3FE0FF" stop-opacity=".22"/>
+          </linearGradient>
+        </defs>
+        <g id="outerTicks"></g>
+        
+        <g id="segs"></g>
+        <g id="lvlring"></g>
+        <g id="marker" style="transform-box:view-box;transform-origin:200px 200px">
+          <path d="M200 26 l-7 -13 h14 z" fill="#E8EEFF"/>
+        </g>
+        
+      </svg>
+      <div class="center tech" id="center">
+        <div class="lvl big" id="lvl"></div>
+        <div class="lvlname" id="lvlname">observación</div>
+      </div>
+    </div>
+
+    <div class="chips" id="chips"></div>
+    <p class="note" id="note"></p>
+  </div>
+
+  <section>
+    <h2>Señales verificadas</h2>
+    <p class="lead" id="regla"></p>
+    <p class="lead">Solo cuentan hechos confirmados en la fuente original: el organismo, la empresa o los investigadores involucrados. No se usan blogs ni resúmenes de terceros.</p>
+    <ul class="feed" id="feed"></ul>
+  </section>
+
+  <section>
+    <h2>La escala</h2>
+    <p class="lead">Cuatro niveles que responden una sola pregunta: ¿seguimos teniendo el control de la IA?</p>
+    <ol class="scale" id="scale"></ol>
+  </section>
+
+  <footer>Cómo funciona: cada día una IA busca noticias solo en sitios oficiales y propone señales. Una persona abre cada fuente, la confirma y la aprueba. Recién ahí se publica y el reloj se recalcula con una regla fija y pública.</footer>
+</main>
+
+<script>
+const C=["#3FA66B","#E0BE3E","#E07A36","#D2434F"];
+const LEVELS=[
+  {n:1,short:"Estable",name:"Zona estable",d:"La IA avanza y las personas la supervisan bien.",ex:"El instituto de seguridad de IA del Reino Unido prueba modelos avanzados para detectar riesgos antes de que lleguen al público.",src:"AI Security Institute",u:"https://aisi.gov.uk/blog/incident-report-unsanctioned-agent-behaviour-during-cyber-testing"},
+  {n:2,short:"Aceleración",name:"Zona de aceleración",d:"La IA avanza más rápido de lo que se regula.",ex:"Según IMD, llegaron a lanzarse cuatro grandes modelos de IA en un lapso de solo 25 días.",src:"IMD",u:"https://www.imd.org/ibyimd/artificial-intelligence/imd-ai-safety-clock-moves-closer-to-midnight-as-agentic-ai-goes-mainstream-and-ai-is-weaponized/"},
+  {n:3,short:"Alerta",name:"Zona de alerta",d:"Hay señales de riesgo, pero todavía es corregible.",ex:"En julio de 2026, agentes de OpenAI escaparon de su entorno de prueba y entraron en sistemas de Hugging Face. Fueron detectados y frenados.",src:"OpenAI",u:"https://cdn.openai.com/pdf/67869394-cb91-4c12-888c-5cbd85c7814c/OpenAI-Hugging-Face%20Incident-Technical-Report.pdf"},
+  {n:4,short:"Crisis",name:"Zona de crisis",d:"Un sistema de IA causó un daño serio y no se lo pudo frenar a tiempo.",ex:"Todavía no ocurrió ningún caso confirmado. Sería, por ejemplo, una IA que deja sin funcionar bancos, hospitales o la red eléctrica."}
+];
+const NS="http://www.w3.org/2000/svg",cx=200,cy=200;
+const pt=(a,r)=>[cx+r*Math.cos(a*Math.PI/180),cy-r*Math.sin(a*Math.PI/180)];
+const lvlOf=v=>Math.min(4,Math.floor(v/25)+1);
+const ang=v=>225-v*2.7;
+function arc(a1,a2,r){const[x1,y1]=pt(a1,r),[x2,y2]=pt(a2,r);return `M${x1} ${y1} A${r} ${r} 0 ${Math.abs(a1-a2)>180?1:0} 1 ${x2} ${y2}`}
+function el(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);parent.appendChild(e);return e}
+
+// anillo exterior de marcas, gira lento
+const ot=document.getElementById("outerTicks");
+for(let i=0;i<120;i++){const a=i*3,[x1,y1]=pt(a,190),[x2,y2]=pt(a,i%10?186:180);
+  el("line",{x1,y1,x2,y2,stroke:i%10?"#16204A":"#2E3B6B","stroke-width":i%10?1:2},ot)}
+
+// 50 segmentos del medidor
+const segsG=document.getElementById("segs"),SEG=50,segs=[];
+for(let i=0;i<SEG;i++){
+  const a1=ang(i*2)-0.9,a2=ang((i+1)*2)+0.9;
+  segs.push(el("path",{d:arc(a1,a2,160),stroke:"#18224A","stroke-width":22,fill:"none"},segsG));
+}
+// anillo interior por niveles
+const lr=document.getElementById("lvlring");
+LEVELS.forEach((L,i)=>{
+  el("path",{d:arc(ang(i*25)-1.2,ang((i+1)*25)+1.2,136),stroke:C[i],"stroke-width":4,fill:"none",opacity:.8},lr);
+  const[tx,ty]=pt(ang(i*25+12.5),122);
+  const t=el("text",{x:tx,y:ty+4,"text-anchor":"middle","font-size":12,"font-family":"Chakra Petch",fill:C[i],"font-weight":700},lr);t.textContent=L.n;
+});
+
+// chips estilo DEFCON
+document.getElementById("chips").innerHTML=LEVELS.map((L,i)=>`<div class="chip" style="color:${C[i]}" data-i="${i}"><b>${L.short}</b></div>`).join("");
+const chips=[...document.querySelectorAll(".chip")];
+const marker=document.getElementById("marker");
+
+function render(v){
+  const li=lvlOf(v)-1,col=C[li];
+  segs.forEach((s,i)=>{const on=(i+1)*2<=Math.round(v);const c=C[lvlOf(i*2+1)-1];
+    s.setAttribute("stroke",on?c:"#18224A");});
+  marker.style.transform=`rotate(${-(ang(v)-90)}deg)`;
+  document.getElementById("lvl").textContent=LEVELS[li].name;document.getElementById("lvl").style.color=col;
+  document.getElementById("lvlname").textContent="";
+  document.getElementById("note").textContent=LEVELS[li].d;
+  chips.forEach((c,i)=>c.classList.toggle("on",i===li));
+  document.getElementById("gtitle").textContent=`Indicador de riesgo: ${LEVELS[li].name}`;
+}
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+function animar(target){
+  if(reduce){render(target);return}
+  const t0=performance.now();(function step(t){const k=Math.min(1,(t-t0)/1600),e=1-Math.pow(1-k,3);render(target*e);if(k<1)requestAnimationFrame(step)})(t0);
+}
+const fmt=f=>new Date(f+"T12:00:00").toLocaleDateString("es-MX",{day:"numeric",month:"long",year:"numeric"});
+const esc=t=>String(t??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+Promise.all([fetch("data/estado.json",{cache:"no-store"}).then(r=>r.json()),fetch("data/senales.json",{cache:"no-store"}).then(r=>r.json())])
+.then(([estado,FEED])=>{
+  animar((estado.zona-1)*25+12.5);
+  document.getElementById("upd").textContent="Actualizado el "+fmt(estado.actualizado);
+  document.getElementById("regla").textContent=`La zona es el nivel más alto entre las señales verificadas que suman riesgo en los últimos ${estado.ventana_dias} días. Hoy hay ${estado.senales_activas} activas.`;
+// feed
+  document.getElementById("feed").innerHTML=FEED.filter(f=>f.verificado).map(f=>`<li style="border-left-color:${f.efecto==="resta"?C[0]:C[f.nivel-1]}"><div class="meta"><span class="tag" style="color:${f.efecto==="resta"?C[0]:C[f.nivel-1]}">${f.efecto==="resta"?"Reduce el riesgo":LEVELS[f.nivel-1].short}</span><span class="ver">✓ Verificado en fuente oficial</span></div><p class="t">${esc(f.titulo)}</p><div class="meta">${esc(f.resumen)}</div><div class="meta"><a href="${esc(f.url)}" target="_blank" rel="noopener" class="src">${esc(f.fuente)}</a></div><div class="meta">${fmt(f.fecha)}. ${f.efecto==="suma"?"Suma riesgo":"Resta riesgo"}: ${esc(f.eje)}</div></li>`).join("");
+})
+.catch(()=>{document.getElementById("upd").textContent="No se pudieron cargar los datos";});
+
+// escala
+document.getElementById("scale").innerHTML=LEVELS.map((L,i)=>`<li><div class="dot" style="color:${C[i]}">${L.n}</div><div><b>${L.name}</b><span>${L.d}<br><em>${L.n<4?"Caso real: ":""}${L.ex}</em>${L.u?`<br><a class="src" href="${L.u}" target="_blank" rel="noopener">Fuente: ${L.src}</a>`:""}</span></div></li>`).join("");
+</script>
+</body>
+</html>
