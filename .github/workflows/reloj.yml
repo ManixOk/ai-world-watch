@@ -1,0 +1,48 @@
+name: Actualizar reloj
+
+on:
+  schedule:
+    - cron: "0 13 * * *"
+  workflow_dispatch:
+  issues:
+    types: [labeled]
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: reloj
+  cancel-in-progress: false
+
+jobs:
+  actualizar:
+    if: github.event_name != 'issues' || github.event.label.name == 'aprobado'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install anthropic requests
+
+      - name: Buscar señales nuevas
+        if: github.event_name != 'issues'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MODELO: ${{ vars.MODELO }}
+        run: python scripts/buscar.py
+
+      - name: Publicar señales aprobadas
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/publicar.py
+
+      - name: Guardar cambios
+        run: |
+          git config user.name "AI World Watch"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/
+          git diff --cached --quiet || git commit -m "Actualización del reloj $(date -u +%F)"
+          git push
