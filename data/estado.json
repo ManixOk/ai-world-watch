@@ -1,7 +1,7 @@
 {
   "zona": 3,
   "nombre": "Zona de alerta",
-  "actualizado": "2026-09-30",
+  "actualizado": "2026-10-01",
   "ventana_dias": 90,
   "senales_activas": 3
 }
